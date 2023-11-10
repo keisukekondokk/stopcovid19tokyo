@@ -26,6 +26,8 @@ dashboardPage(
       class = "dropdown"
     )
   ),
+  #++++++++++++++++++++++++++++++++++++++
+  #Sidebar
   dashboardSidebar(width = 380,
                    sidebarMenu(
                      menuItem("陽性患者数（累計）",
@@ -41,29 +43,79 @@ dashboardPage(
                        tabName = "info",
                        icon = icon("info-circle")
                      )
-                   )),
+                   )
+  ),
+  #++++++++++++++++++++++++++++++++++++++
+  #Body
   dashboardBody(
-    tags$style(type = "text/css", "html, body {margin: 0; width: 100%; height: 100%}"),
-    tags$style(type = "text/css", "h2 {margin-top: 60px}"),
-    tags$style(type = "text/css", "h3, h4 {margin-top: 30px}"),
+    tags$style(type = "text/css", "html, body {margin: 0; width: 100%; height: 100%;}"),
+    tags$style(type = "text/css", "h2 {margin-top: 20px;}"),
+    tags$style(type = "text/css", "h3 {margin-top: 20px; border-bottom: solid 1px black;}"),
+    tags$style(type = "text/css", "h4 {margin-top: 20px;}"),
     tags$style(
       type = "text/css",
-      "#covid19map1, #covid19map2 {margin: 0; height: 90vh !important;}"
+      "#panel_map {padding: 5px; background-color: #FFFFFF; opacity: 0.9;}"
+    ),
+    tags$style(
+      type = "text/css",
+      "#covid19map1, #covid19map2 {margin: 0; height: calc(100vh - 50px) !important;}"
     ),
     tabItems(
+      #++++++++++++++++++++++++++++++++++++++
       tabItem(tabName = "tab_covid19map1",
               fluidRow(
+                style = "margin-top: -20px; margin-bottom: -20px;",
+                absolutePanel(
+                  id = "panel_map",
+                  class = "panel panel-default",
+                  top = "auto",
+                  bottom = "20",
+                  left = "auto",
+                  right = "auto",
+                  width = 160,
+                  height = "auto",
+                  style = "z-index:10;",
+                  dateInput(
+                    inputId = "dateMap1",
+                    label = h4(span(icon("calendar"), "Select Date:")),
+                    value = "2022-09-26",
+                    min = "2020-03-31",
+                    max = "2022-09-26",
+                  )
+                ),
                 leafletOutput("covid19map1") %>%
                   withSpinner(color = getOption("spinner.color", default = "#3C8EBC"))
-              )),
+              )
+      ),
+      #++++++++++++++++++++++++++++++++++++++
       tabItem(tabName = "tab_covid19map2",
               fluidRow(
+                style = "margin-top: -20px; margin-bottom: -20px;",
+                absolutePanel(
+                  id = "panel_map",
+                  class = "panel panel-default",
+                  top = "auto",
+                  bottom = "20",
+                  left = "auto",
+                  right = "auto",
+                  width = 160,
+                  height = "auto",
+                  style = "z-index:10;",
+                  dateInput(
+                    inputId = "dateMap2",
+                    label = h4(span(icon("calendar"), "Select Date:")),
+                    value = "2022-09-26",
+                    min = "2020-03-31",
+                    max = "2022-09-26",
+                  )
+                ),
                 leafletOutput("covid19map2") %>%
                   withSpinner(color = getOption("spinner.color", default = "#3C8EBC"))
-              )),
-      tabItem(
-        tabName = "info",
-        div(style = "margin-left: -30px; margin-right: -30px;",
+              )
+      ),
+      #++++++++++++++++++++++++++++++++++++++
+      tabItem(tabName = "info",
+          fluidRow(
             column(
               width = 12,
               box(
@@ -124,7 +176,8 @@ dashboardPage(
                   "上記サイトより、2015年国勢調査の小地域の境界データより、東京都全域のシェープファイルを使用。作成者によって区市町村別に境界データを加工。"
                 )
               )
-            ))
+            )
+          )
       )
     )
   )
