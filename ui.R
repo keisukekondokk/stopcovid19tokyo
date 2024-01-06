@@ -49,9 +49,9 @@ dashboardPage(
   #Body
   dashboardBody(
     tags$style(type = "text/css", "html, body {margin: 0; width: 100%; height: 100%;}"),
-    tags$style(type = "text/css", "h2 {margin-top: 20px;}"),
-    tags$style(type = "text/css", "h3 {margin-top: 20px; border-bottom: solid 1px black;}"),
-    tags$style(type = "text/css", "h4 {margin-top: 20px;}"),
+    tags$style(type = "text/css", "h2 {margin-top: 15px;}"),
+    tags$style(type = "text/css", "h3 {margin-top: 15px; border-bottom: solid 1px black;}"),
+    tags$style(type = "text/css", "h4 {margin-top: 15px;}"),
     tags$style(
       type = "text/css",
       "#panel_map {padding: 5px; background-color: #FFFFFF; opacity: 0.9;}"
@@ -116,6 +116,7 @@ dashboardPage(
       #++++++++++++++++++++++++++++++++++++++
       tabItem(tabName = "info",
           fluidRow(
+            style = "margin-right: -30px; margin-left: -30px;",
             column(
               width = 12,
               box(

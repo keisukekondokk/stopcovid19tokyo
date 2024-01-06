@@ -11,24 +11,29 @@
 
 server <- function(input, output, session) {
   
+  #==============================================
   #日付1の変更を日付2へ反映
   observeEvent(input$dateMap1, {
     dateMap <- input$dateMap1
-    updateDateInput(session,
-                    inputId = "dateMap2",
-                    value = dateMap,
+    updateDateInput(
+      session,
+      inputId = "dateMap2",
+      value = dateMap,
     )
   })
   
+  #==============================================
   #日付2の変更を日付1へ反映
   observeEvent(input$dateMap2, {
     dateMap <- input$dateMap2
-    updateDateInput(session,
-                    inputId = "dateMap1",
-                    value = dateMap,
+    updateDateInput(
+      session,
+      inputId = "dateMap1",
+      value = dateMap,
     )
   })
   
+  #==============================================
   #日付1/2の変更があれば地図更新
   observeEvent(input$dateMap1, {
     #データ日
@@ -46,24 +51,27 @@ server <- function(input, output, session) {
       dplyr::left_join(dfCovid, by = "cityCode") %>%
       dplyr::mutate(cumCovidPositivePerPop = cumCovidPositive / JINKO * 100000)
     
+    #Leaflet Basemap
+    lf <- leaflet() %>%
+      addMapboxGL(
+        accessToken = accessToken,
+        style = styleUrl,
+        setView = FALSE
+      )
+      
     #++++++++++++++++++++++++++++++++++++++
     #covid19map1
     output$covid19map1 <- renderLeaflet({
+
       #Color
-      pal <-
-        colorBin("Blues",
-                 domain = sf$cumCovidPositive,
-                 bins = 7)
-      
+      pal1 <- colorBin("Blues", domain = sf$cumCovidPositive, bins = 7)
+
       #Make Map
-      leaflet(sf) %>%
-        #Tile Layer
-        addMapboxGL(accessToken = accessToken,
-                    style = styleUrl,
-                    setView = FALSE) %>%
+      lf %>%
         #Polygon Layer
         addPolygons(
-          fillColor = ~ pal(cumCovidPositive),
+          data = sf,
+          fillColor = ~ pal1(cumCovidPositive),
           fillOpacity = 0.7,
           stroke = TRUE,
           weight = 0.8,
@@ -89,8 +97,8 @@ server <- function(input, output, session) {
         ) %>%
         #Legend
         addLegend(
-          pal = pal,
-          values = ~ cumCovidPositive,
+          pal = pal1,
+          values = sf$cumCovidPositive,
           opacity = 0.8,
           title = paste("陽性患者数（累計）", strPublishedDate, sep = "<br>"),
           position = "topright"
@@ -111,21 +119,16 @@ server <- function(input, output, session) {
     #++++++++++++++++++++++++++++++++++++++
     #covid19map2
     output$covid19map2 <- renderLeaflet({
+      
       #Color
-      pal <-
-        colorBin("Blues",
-                 domain = sf$cumCovidPositivePerPop,
-                 bins = 7)
+      pal2 <- colorBin("Blues", domain = sf$cumCovidPositivePerPop, bins = 7)
       
       #Make Map
-      leaflet(sf) %>%
-        #Tile Layer
-        addMapboxGL(accessToken = accessToken,
-                    style = styleUrl,
-                    setView = FALSE) %>%
+      lf %>%
         #Polygon Layer
         addPolygons(
-          fillColor = ~ pal(cumCovidPositivePerPop),
+          data = sf,
+          fillColor = ~ pal2(cumCovidPositivePerPop),
           fillOpacity = 0.7,
           stroke = TRUE,
           weight = 0.8,
@@ -151,8 +154,8 @@ server <- function(input, output, session) {
         ) %>%
         #Legend
         addLegend(
-          pal = pal,
-          values = ~ cumCovidPositivePerPop,
+          pal = pal2,
+          values = sf$cumCovidPositivePerPop,
           opacity = 0.8,
           title = paste("居住者人口10万人あたりの", "陽性患者数（累計）", strPublishedDate, sep = "<br>"),
           position = "topright"
